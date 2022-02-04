@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Model, DataType, Table, Column, BelongsToMany } from 'sequelize-typescript';
+import {
+  Model,
+  DataType,
+  Table,
+  Column,
+  BelongsToMany,
+  HasMany,
+} from 'sequelize-typescript';
+import { PostModel } from 'src/posts/posts.model';
 import { RoleModel } from 'src/roles/roles.model';
 import { UserRolesModel } from 'src/roles/user-roles.model';
 
@@ -9,46 +17,52 @@ interface IUserCreationAttrs {
 }
 
 @Table({
-  tableName: 'users'
+  tableName: 'users',
 })
 export class UserModel extends Model<UserModel, IUserCreationAttrs> {
-
   @ApiProperty({
     example: '1',
-    description: 'Unique id of user'
+    description: 'Unique id of user',
   })
-  @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true})
+  @Column({
+    type: DataType.INTEGER,
+    unique: true,
+    autoIncrement: true,
+    primaryKey: true,
+  })
   id: number;
 
   @ApiProperty({
     example: 'example@example.com',
-    description: 'Email of user'
+    description: 'Email of user',
   })
-  @Column({type: DataType.STRING, unique: true, allowNull: false})
+  @Column({ type: DataType.STRING, unique: true, allowNull: false })
   email: string;
 
   @ApiProperty({
     example: '123456',
-    description: 'Password of user'
+    description: 'Password of user',
   })
-  @Column({type: DataType.STRING, allowNull: false})
+  @Column({ type: DataType.STRING, allowNull: false })
   password: string;
 
   @ApiProperty({
     example: false,
-    description: 'User\'s ban status'
+    description: "User's ban status",
   })
-  @Column({type: DataType.BOOLEAN, defaultValue: false})
+  @Column({ type: DataType.BOOLEAN, defaultValue: false })
   banned: boolean;
 
   @ApiProperty({
     example: 'Bad boy',
-    description: 'User\'s ban reason'
+    description: "User's ban reason",
   })
-  @Column({type: DataType.STRING, allowNull: true})
+  @Column({ type: DataType.STRING, allowNull: true })
   banReason: string;
 
   @BelongsToMany(() => RoleModel, () => UserRolesModel)
   roles: RoleModel[];
 
+  @HasMany(() => PostModel)
+  posts: PostModel[];
 }

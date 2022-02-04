@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/users/dto/create-user-dto';
 import { UsersService } from 'src/users/users.service';
@@ -7,11 +12,10 @@ import { UserModel } from 'src/users/users.model';
 
 @Injectable()
 export class AuthService {
-
   constructor(
     private userService: UsersService,
-    private jwtService: JwtService
-  ) {} 
+    private jwtService: JwtService,
+  ) {}
 
   async login(userDto: CreateUserDto) {
     const user = await this.validateUser(userDto);
@@ -20,29 +24,37 @@ export class AuthService {
 
   async registration(userDto: CreateUserDto) {
     const candidat = await this.userService.getUserByEmail(userDto.email);
-    if(candidat) {
-      throw new HttpException(`User with email ${userDto.email} already exists`, HttpStatus.BAD_REQUEST);
+    if (candidat) {
+      throw new HttpException(
+        `User with email ${userDto.email} already exists`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const hashPassword = await bcrypt.hash(userDto.password, 5);
-    const user = await this.userService.createUser({...userDto, password: hashPassword});
-    return this.generateToken(user)
+    const user = await this.userService.createUser({
+      ...userDto,
+      password: hashPassword,
+    });
+    return this.generateToken(user);
   }
 
   private async generateToken(user: UserModel) {
-    const payload = {email: user.email, id: user.id, roles: user.roles};
+    const payload = { email: user.email, id: user.id, roles: user.roles };
     return {
-      token: this.jwtService.sign(payload)
-    }
+      token: this.jwtService.sign(payload),
+    };
   }
 
   private async validateUser(userDto: CreateUserDto) {
     const user = await this.userService.getUserByEmail(userDto.email);
-    const passwordEquals = await bcrypt.compare(userDto.password, user.password);
+    const passwordEquals = await bcrypt.compare(
+      userDto.password,
+      user.password,
+    );
 
-    if(user && passwordEquals) {
+    if (user && passwordEquals) {
       return user;
     }
-    throw new UnauthorizedException({message: 'Email or password incorrect'});
+    throw new UnauthorizedException({ message: 'Email or password incorrect' });
   }
-
 }
