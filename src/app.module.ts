@@ -15,6 +15,9 @@ import { FilesModule } from './files/files.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ProfilesModule } from './profiles/profiles.module';
+import { TaxonomyModule } from './taxonomy/taxonomy.module';
+import { TaxonomyModel } from './taxonomy/taxonomy.model';
+import { TermModel } from './taxonomy/term.model';
 
 @Module({
   imports: [
@@ -31,7 +34,7 @@ import { ProfilesModule } from './profiles/profiles.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [UserModel, RoleModel, UserRolesModel, PostModel],
+      models: [UserModel, RoleModel, UserRolesModel, PostModel, TaxonomyModel, TermModel],
       autoLoadModels: true,
     }),
     UsersModule,
@@ -39,7 +42,8 @@ import { ProfilesModule } from './profiles/profiles.module';
     AuthModule,
     PostsModule,
     FilesModule,
-    ProfilesModule
+    ProfilesModule,
+    TaxonomyModule
   ],
   controllers: [AppController],
   providers: [AppService],
