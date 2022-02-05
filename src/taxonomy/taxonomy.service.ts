@@ -18,7 +18,7 @@ export class TaxonomyService {
     async getTaxonomies() {
         const taxonomies = await this.taxonomyRepository.findAll({
             include: {
-                model: TermModel,
+                model: TermModel
             },
         });
         return taxonomies;

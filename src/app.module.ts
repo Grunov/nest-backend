@@ -14,10 +14,12 @@ import { PostModel } from './posts/posts.model';
 import { FilesModule } from './files/files.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { ProfilesModule } from './profiles/profiles.module';
 import { TaxonomyModule } from './taxonomy/taxonomy.module';
 import { TaxonomyModel } from './taxonomy/taxonomy.model';
 import { TermModel } from './taxonomy/term.model';
+import { NodesModule } from './nodes/nodes.module';
+import { NodesModel } from './nodes/nodes.model';
+import { NodeTypesModel } from './nodes/node-types.model';
 
 @Module({
   imports: [
@@ -34,7 +36,16 @@ import { TermModel } from './taxonomy/term.model';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [UserModel, RoleModel, UserRolesModel, PostModel, TaxonomyModel, TermModel],
+      models: [
+        UserModel, 
+        RoleModel, 
+        UserRolesModel, 
+        PostModel, 
+        TaxonomyModel, 
+        TermModel, 
+        NodesModel,
+        NodeTypesModel
+      ],
       autoLoadModels: true,
     }),
     UsersModule,
@@ -42,8 +53,8 @@ import { TermModel } from './taxonomy/term.model';
     AuthModule,
     PostsModule,
     FilesModule,
-    ProfilesModule,
-    TaxonomyModule
+    TaxonomyModule,
+    NodesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
