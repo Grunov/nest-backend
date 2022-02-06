@@ -1,17 +1,17 @@
 import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
-import { NodesModel } from "./nodes.model";
+import { FieldsModel } from "./fields.model";
 
-interface INodeTypesCreationAttrs {
+interface IFieldsTypesCreationAttrs {
     title: string;
     name: string;
 }
 
 @Table({
-    tableName: 'node_types',
+    tableName: 'fields_types',
     createdAt: false,
     updatedAt: false
 })
-export class NodeTypesModel extends Model<NodeTypesModel, INodeTypesCreationAttrs> {
+export class FieldsTypesModel extends Model<FieldsTypesModel, IFieldsTypesCreationAttrs> {
 
     @Column({
         type: DataType.INTEGER,
@@ -35,7 +35,6 @@ export class NodeTypesModel extends Model<NodeTypesModel, INodeTypesCreationAttr
     })
     name: string;
 
-    @HasMany(() => NodesModel)
-    nodes: NodesModel[];
-
+    @HasMany(() => FieldsModel)
+    field: FieldsModel[];
 }
