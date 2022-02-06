@@ -20,6 +20,9 @@ import { TermModel } from './taxonomy/term.model';
 import { NodesModule } from './nodes/nodes.module';
 import { NodesModel } from './nodes/nodes.model';
 import { NodeTypesModel } from './nodes/node-types.model';
+import { FieldsModule } from './fields/fields.module';
+import { FieldsModel } from './fields/fields.model';
+import { FieldsTypesModel } from './fields/fields-types.model';
 
 @Module({
   imports: [
@@ -44,7 +47,9 @@ import { NodeTypesModel } from './nodes/node-types.model';
         TaxonomyModel, 
         TermModel, 
         NodesModel,
-        NodeTypesModel
+        NodeTypesModel,
+        FieldsModel,
+        FieldsTypesModel
       ],
       autoLoadModels: true,
     }),
@@ -55,6 +60,7 @@ import { NodeTypesModel } from './nodes/node-types.model';
     FilesModule,
     TaxonomyModule,
     NodesModule,
+    FieldsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
