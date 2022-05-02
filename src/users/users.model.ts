@@ -7,6 +7,8 @@ import {
   BelongsToMany,
   HasMany,
 } from 'sequelize-typescript';
+import TokensModel from 'src/auth/tokens.model';
+import UserTokensModel from 'src/auth/user-tokens.model';
 import { RoleModel } from 'src/roles/roles.model';
 import { UserRolesModel } from 'src/roles/user-roles.model';
 
@@ -62,4 +64,7 @@ export class UserModel extends Model<UserModel, IUserCreationAttrs> {
   @BelongsToMany(() => RoleModel, () => UserRolesModel)
   roles: RoleModel[];
 
+  @BelongsToMany(() => TokensModel, () => UserTokensModel)
+  tokens: TokensModel[];
+  
 }

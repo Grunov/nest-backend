@@ -38,7 +38,11 @@ export class AuthService {
       ...userDto,
       password: hashPassword,
     });
-    return this.generateToken(user);
+    const tokens = this.generateTokens(user);
+    return {
+      user,
+      tokens
+    };
   }
 
   async checkAuth(token: string) {
@@ -68,8 +72,8 @@ export class AuthService {
       expiresIn: process.env.REFRESH_TOKEN_EXPIRATION || '24h'
     });
     return {
-      accessToken,
-      refreshToken
+      accessToken: accessToken,
+      refreshToken: refreshToken
     }
   }
 

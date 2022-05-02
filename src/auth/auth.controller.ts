@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Response } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from 'src/users/dto/create-user-dto';
 import { AuthService } from './auth.service';
@@ -14,11 +14,19 @@ export class AuthController {
   }
 
   @Post('/registration')
-  registration(
+  async registration(
     @Body() userDto: CreateUserDto,
-    @Response() res,
+    @Res({passthrough: true}) response
   ) {
-    return this.authService.registration(userDto);
+    const authData = await this.authService.registration(userDto);
+    response.cookie('refreshToken', authData.tokens.refreshToken, {
+      expires: new Date(new Date().getTime() + 30 * 1000),
+      httpOnly: true
+    });
+    return {
+      user: authData.user,
+      accessToken: authData.tokens.accessToken
+    }
   }
 
   @Post('/check-auth')
