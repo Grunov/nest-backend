@@ -27,7 +27,6 @@ import { ProfilesModule } from './profiles/profiles.module';
 import MenuItemsModel from "./menu/menu-items.model";
 import ProfilesModel from './profiles/profiles.models';
 import TokensModel from './auth/tokens.model';
-import UserTokensModel from './auth/user-tokens.model';
 
 @Module({
   imports: [
@@ -57,8 +56,7 @@ import UserTokensModel from './auth/user-tokens.model';
         MenusModel,
         MenuItemsModel,
         ProfilesModel,
-        TokensModel,
-        UserTokensModel
+        TokensModel
       ],
       autoLoadModels: true,
     }),

@@ -1,15 +1,15 @@
-import { Column, Table, DataType, Model, BelongsTo, ForeignKey, BelongsToMany } from "sequelize-typescript";
+import { Column, Table, DataType, Model, BelongsTo, ForeignKey } from "sequelize-typescript";
 import { UserModel } from "src/users/users.model";
-import UserTokensModel from "./user-tokens.model";
 
 interface ITokenCreationsAtts {
-    value: string;
+    value: any;
+    userId: number
 }
 
 @Table({
     tableName: 'tokens'
 })
-export default class TokensModel extends Model <TokensModel, ITokenCreationsAtts> {
+export default class TokensModel extends Model<TokensModel, ITokenCreationsAtts> {
 
     @Column({
         type: DataType.INTEGER,
@@ -20,12 +20,19 @@ export default class TokensModel extends Model <TokensModel, ITokenCreationsAtts
     id: number;
 
     @Column({
-        type: DataType.STRING,
+        type: DataType.STRING(1000),
         unique: true,
         allowNull: false
     })
-    value: string;
-    
-    @BelongsToMany(() => UserModel, () => UserTokensModel )
-    users: UserModel[];
+    value: any;
+
+    @ForeignKey(() => UserModel)
+    @Column({
+        type: DataType.INTEGER,
+        allowNull: false,
+    })
+    userId: number;
+
+    @BelongsTo(() => UserModel)
+    user: UserModel
 }

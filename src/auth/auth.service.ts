@@ -9,10 +9,14 @@ import { CreateUserDto } from 'src/users/dto/create-user-dto';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcryptjs';
 import { UserModel } from 'src/users/users.model';
+import TokensModel from './tokens.model';
+import { InjectModel } from '@nestjs/sequelize';
 
 @Injectable()
 export class AuthService {
   constructor(
+    @InjectModel(TokensModel)
+    private tokensRepository: typeof TokensModel,
     private userService: UsersService,
     private jwtService: JwtService,
   ) {}
@@ -39,6 +43,7 @@ export class AuthService {
       password: hashPassword,
     });
     const tokens = this.generateTokens(user);
+    await this.tokensRepository.create({value: tokens.refreshToken, userId: user.id})
     return {
       user,
       tokens
@@ -53,7 +58,7 @@ export class AuthService {
     };
   }
 
-  private generateToken(user: UserModel) {
+  generateToken(user: UserModel) {
     const payload = { email: user.email, id: user.id, roles: user.roles };
     return this.jwtService.sign(payload, {
       secret: process.env.ACCESS_TOKEN_SECRET || 'ACCESS_TOKEN_SECRET',
@@ -61,7 +66,7 @@ export class AuthService {
     });
   }
 
-  private generateTokens(user: UserModel) {
+  generateTokens(user: UserModel) {
     const payload = { email: user.email, id: user.id, roles: user.roles };
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.ACCESS_TOKEN_SECRET || 'ACCESS_TOKEN_SECRET',
