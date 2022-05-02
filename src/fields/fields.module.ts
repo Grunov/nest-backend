@@ -8,12 +8,7 @@ import { FieldsTypesModel } from './fields-types.model';
 @Module({
   providers: [FieldsService],
   controllers: [FieldsController],
-  imports: [
-    SequelizeModule.forFeature([
-      FieldsModel,
-      FieldsTypesModel
-    ])
-  ],
-  exports: [FieldsService]
+  imports: [SequelizeModule.forFeature([FieldsModel, FieldsTypesModel])],
+  exports: [FieldsService],
 })
 export class FieldsModule {}

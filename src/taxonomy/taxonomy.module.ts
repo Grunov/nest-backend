@@ -8,12 +8,7 @@ import { TermModel } from './term.model';
 @Module({
   providers: [TaxonomyService],
   controllers: [TaxonomyController],
-  imports: [
-    SequelizeModule.forFeature([
-      TaxonomyModel,
-      TermModel
-    ])
-  ],
-  exports: [TaxonomyService]
+  imports: [SequelizeModule.forFeature([TaxonomyModel, TermModel])],
+  exports: [TaxonomyService],
 })
 export class TaxonomyModule {}

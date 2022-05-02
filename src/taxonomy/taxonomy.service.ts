@@ -7,30 +7,29 @@ import { TermModel } from './term.model';
 
 @Injectable()
 export class TaxonomyService {
+  constructor(
+    @InjectModel(TaxonomyModel)
+    private taxonomyRepository: typeof TaxonomyModel,
+    @InjectModel(TermModel)
+    private termRepository: typeof TermModel,
+  ) {}
 
-    constructor(
-        @InjectModel(TaxonomyModel)
-        private taxonomyRepository: typeof TaxonomyModel,
-        @InjectModel(TermModel)
-        private termRepository: typeof TermModel
-    ) {}
+  async getTaxonomies() {
+    const taxonomies = await this.taxonomyRepository.findAll({
+      include: {
+        model: TermModel,
+      },
+    });
+    return taxonomies;
+  }
 
-    async getTaxonomies() {
-        const taxonomies = await this.taxonomyRepository.findAll({
-            include: {
-                model: TermModel
-            },
-        });
-        return taxonomies;
-    }
+  async createTaxonomy(dto: CreateTaxonomyDto) {
+    const taxonomy = await this.taxonomyRepository.create(dto);
+    return taxonomy;
+  }
 
-    async createTaxonomy(dto: CreateTaxonomyDto) {
-        const taxonomy = await this.taxonomyRepository.create(dto);
-        return taxonomy;
-    }
-
-    async createTerm(dto: CreateTermDto) {
-        const term = await this.termRepository.create(dto);
-        return term;
-    }
+  async createTerm(dto: CreateTermDto) {
+    const term = await this.termRepository.create(dto);
+    return term;
+  }
 }

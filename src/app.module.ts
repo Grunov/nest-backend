@@ -9,8 +9,6 @@ import { RolesModule } from './roles/roles.module';
 import { RoleModel } from './roles/roles.model';
 import { UserRolesModel } from './roles/user-roles.model';
 import { AuthModule } from './auth/auth.module';
-import { PostsModule } from './posts/posts.module';
-import { PostModel } from './posts/posts.model';
 import { FilesModule } from './files/files.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -23,11 +21,18 @@ import { NodeTypesModel } from './nodes/node-types.model';
 import { FieldsModule } from './fields/fields.module';
 import { FieldsModel } from './fields/fields.model';
 import { FieldsTypesModel } from './fields/fields-types.model';
+import { MenusModule } from './menu/menus.module';
+import {MenusModel} from "./menu/menus.model";
+import { ProfilesModule } from './profiles/profiles.module';
+import MenuItemsModel from "./menu/menu-items.model";
+import ProfilesModel from './profiles/profiles.models';
+import TokensModel from './auth/tokens.model';
+import UserTokensModel from './auth/user-tokens.model';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `.${process.env.NODE_ENV}.env`,
+      envFilePath: `.${process.env.NODE_ENV}.env`
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, 'static'),
@@ -40,27 +45,32 @@ import { FieldsTypesModel } from './fields/fields-types.model';
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       models: [
-        UserModel, 
-        RoleModel, 
-        UserRolesModel, 
-        PostModel, 
-        TaxonomyModel, 
-        TermModel, 
+        UserModel,
+        RoleModel,
+        UserRolesModel,
+        TaxonomyModel,
+        TermModel,
         NodesModel,
         NodeTypesModel,
         FieldsModel,
-        FieldsTypesModel
+        FieldsTypesModel,
+        MenusModel,
+        MenuItemsModel,
+        ProfilesModel,
+        TokensModel,
+        UserTokensModel
       ],
       autoLoadModels: true,
     }),
     UsersModule,
     RolesModule,
     AuthModule,
-    PostsModule,
     FilesModule,
     TaxonomyModule,
     NodesModule,
     FieldsModule,
+    MenusModule,
+    ProfilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
