@@ -1,3 +1,3 @@
 export class CreateNodeDto {
-    readonly typeId: number;
+  readonly typeId: number;
 }

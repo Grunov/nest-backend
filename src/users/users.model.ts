@@ -7,7 +7,6 @@ import {
   BelongsToMany,
   HasMany,
 } from 'sequelize-typescript';
-import { PostModel } from 'src/posts/posts.model';
 import { RoleModel } from 'src/roles/roles.model';
 import { UserRolesModel } from 'src/roles/user-roles.model';
 
@@ -63,6 +62,4 @@ export class UserModel extends Model<UserModel, IUserCreationAttrs> {
   @BelongsToMany(() => RoleModel, () => UserRolesModel)
   roles: RoleModel[];
 
-  @HasMany(() => PostModel)
-  posts: PostModel[];
 }

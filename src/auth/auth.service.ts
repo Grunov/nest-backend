@@ -19,7 +19,10 @@ export class AuthService {
 
   async login(userDto: CreateUserDto) {
     const user = await this.validateUser(userDto);
-    return this.generateToken(user);
+    return {
+      user,
+      token: this.generateToken(user),
+    };
   }
 
   async registration(userDto: CreateUserDto) {
@@ -38,11 +41,40 @@ export class AuthService {
     return this.generateToken(user);
   }
 
-  private async generateToken(user: UserModel) {
-    const payload = { email: user.email, id: user.id, roles: user.roles };
+  async checkAuth(token: string) {
+    const user = await this.validateAccessToken(token);
     return {
-      token: this.jwtService.sign(payload),
+      user,
+      token: this.generateToken(user),
     };
+  }
+
+  private generateToken(user: UserModel) {
+    const payload = { email: user.email, id: user.id, roles: user.roles };
+    return this.jwtService.sign(payload, {
+      secret: process.env.ACCESS_TOKEN_SECRET || 'ACCESS_TOKEN_SECRET',
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRATION || '24h'
+    });
+  }
+
+  private generateTokens(user: UserModel) {
+    const payload = { email: user.email, id: user.id, roles: user.roles };
+    const accessToken = this.jwtService.sign(payload, {
+      secret: process.env.ACCESS_TOKEN_SECRET || 'ACCESS_TOKEN_SECRET',
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRATION || '24h'
+    });
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: process.env.REFRESH_TOKEN_SECRET || 'REFRESH_TOKEN_SECRET',
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRATION || '24h'
+    });
+    return {
+      accessToken,
+      refreshToken
+    }
+  }
+
+  private async validateAccessToken(token: string) {
+    return this.jwtService.verify(token);
   }
 
   private async validateUser(userDto: CreateUserDto) {

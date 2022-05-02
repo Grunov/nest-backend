@@ -8,12 +8,7 @@ import { NodeTypesModel } from './node-types.model';
 @Module({
   providers: [NodesService],
   controllers: [NodesController],
-  imports: [
-    SequelizeModule.forFeature([
-      NodesModel,
-      NodeTypesModel
-    ])
-  ],
-  exports: [NodesService]
+  imports: [SequelizeModule.forFeature([NodesModel, NodeTypesModel])],
+  exports: [NodesService],
 })
 export class NodesModule {}

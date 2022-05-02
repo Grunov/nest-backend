@@ -7,22 +7,20 @@ import { FieldsModel } from './fields.model';
 
 @Injectable()
 export class FieldsService {
+  constructor(
+    @InjectModel(FieldsModel)
+    private fieldsRepository: typeof FieldsModel,
+    @InjectModel(FieldsTypesModel)
+    private fieldsTypesRepository: typeof FieldsTypesModel,
+  ) {}
 
-    constructor(
-        @InjectModel(FieldsModel) 
-        private fieldsRepository: typeof FieldsModel,
-        @InjectModel(FieldsTypesModel)
-        private fieldsTypesRepository: typeof FieldsTypesModel
-    ) {}
+  async createField(dto: CreateFieldDto) {
+    const field = await this.fieldsRepository.create(dto);
+    return field;
+  }
 
-    async createField(dto: CreateFieldDto) {
-        const field = await this.fieldsRepository.create(dto);
-        return field;
-    }
-
-    async createFieldsType(dto: CreateFieldsTypeDto) {
-        const type = await this.fieldsTypesRepository.create(dto);
-        return type;
-    }
-
+  async createFieldsType(dto: CreateFieldsTypeDto) {
+    const type = await this.fieldsTypesRepository.create(dto);
+    return type;
+  }
 }

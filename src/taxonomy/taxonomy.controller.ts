@@ -5,24 +5,20 @@ import { TaxonomyService } from './taxonomy.service';
 
 @Controller('taxonomy')
 export class TaxonomyController {
+  constructor(private taxonomyService: TaxonomyService) {}
 
-    constructor(private taxonomyService: TaxonomyService) {}
+  @Get('/get-all')
+  getTaxonomies() {
+    return this.taxonomyService.getTaxonomies();
+  }
 
-    @Get('/get-all')
-    getTaxonomies() {
-        return this.taxonomyService.getTaxonomies()
-    }
+  @Post('/create')
+  createTaxonomy(@Body() taxonomyDto: CreateTaxonomyDto) {
+    return this.taxonomyService.createTaxonomy(taxonomyDto);
+  }
 
-    @Post('/create')
-    createTaxonomy(@Body() taxonomyDto: CreateTaxonomyDto) {
-        return this.taxonomyService.createTaxonomy(taxonomyDto);
-    }
-
-    @Post('/term/create')
-    createTerm(@Body() termDto: CreateTermDto) {
-        return this.taxonomyService.createTerm(termDto);
-    }
-
-
-    
+  @Post('/term/create')
+  createTerm(@Body() termDto: CreateTermDto) {
+    return this.taxonomyService.createTerm(termDto);
+  }
 }
