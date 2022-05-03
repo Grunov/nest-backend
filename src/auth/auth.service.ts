@@ -9,7 +9,7 @@ import { CreateUserDto } from 'src/users/dto/create-user-dto';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcryptjs';
 import { UserModel } from 'src/users/users.model';
-import TokensModel from './tokens.model';
+import TokensModel from '../tokens/tokens.model';
 import { InjectModel } from '@nestjs/sequelize';
 
 @Injectable()
@@ -23,9 +23,17 @@ export class AuthService {
 
   async login(userDto: CreateUserDto) {
     const user = await this.validateUser(userDto);
+    const tokens = this.generateTokens(user);
+    const refreshToken = await this.tokensRepository.create({value: tokens.refreshToken, userId: user.id});
+    if(!refreshToken) {
+      throw new HttpException(
+        `Проблема авторизации`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } 
     return {
       user,
-      token: this.generateToken(user),
+      tokens
     };
   }
 
@@ -43,7 +51,13 @@ export class AuthService {
       password: hashPassword,
     });
     const tokens = this.generateTokens(user);
-    await this.tokensRepository.create({value: tokens.refreshToken, userId: user.id})
+    const refreshToken = await this.tokensRepository.create({value: tokens.refreshToken, userId: user.id});
+    if(!refreshToken) {
+      throw new HttpException(
+        `Проблема авторизации`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    } 
     return {
       user,
       tokens

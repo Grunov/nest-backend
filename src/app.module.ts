@@ -24,9 +24,10 @@ import { FieldsTypesModel } from './fields/fields-types.model';
 import { MenusModule } from './menu/menus.module';
 import {MenusModel} from "./menu/menus.model";
 import { ProfilesModule } from './profiles/profiles.module';
+import { TokensModule } from './tokens/tokens.module';
 import MenuItemsModel from "./menu/menu-items.model";
 import ProfilesModel from './profiles/profiles.models';
-import TokensModel from './auth/tokens.model';
+import TokensModel from './tokens/tokens.model';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import TokensModel from './auth/tokens.model';
     FieldsModule,
     MenusModule,
     ProfilesModule,
+    TokensModule,
   ],
   controllers: [AppController],
   providers: [AppService],

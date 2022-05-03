@@ -9,8 +9,19 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/login')
-  login(@Body() userDto: CreateUserDto) {
-    return this.authService.login(userDto);
+  async login(
+    @Body() userDto: CreateUserDto,
+    @Res({passthrough: true}) response
+  ) {
+    const authData = await this.authService.login(userDto);
+    response.cookie('refreshToken', authData.tokens.refreshToken, {
+      expires: new Date(new Date().getTime() + 30 * 1000),
+      httpOnly: true
+    });
+    return {
+      user: authData.user,
+      accessToken: authData.tokens.accessToken
+    }
   }
 
   @Post('/registration')

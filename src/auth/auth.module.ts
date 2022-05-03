@@ -4,7 +4,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from 'src/users/users.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import TokensModel from './tokens.model';
+import TokensModel from '../tokens/tokens.model';
 
 console.log(process.env.ACCESS_TOKEN_EXPIRATION)
 
