@@ -39,9 +39,4 @@ export class AuthController {
       accessToken: authData.tokens.accessToken
     }
   }
-
-  @Post('/check-auth')
-  checkAuth(@Body() data: any) {
-    return this.authService.checkAuth(data.token);
-  }
 }

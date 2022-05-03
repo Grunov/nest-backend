@@ -4,27 +4,22 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/users/dto/create-user-dto';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcryptjs';
-import { UserModel } from 'src/users/users.model';
-import TokensModel from '../tokens/tokens.model';
-import { InjectModel } from '@nestjs/sequelize';
+import { TokensService } from 'src/tokens/tokens.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(TokensModel)
-    private tokensRepository: typeof TokensModel,
     private userService: UsersService,
-    private jwtService: JwtService,
+    private tokensService: TokensService,
   ) {}
 
   async login(userDto: CreateUserDto) {
     const user = await this.validateUser(userDto);
-    const tokens = this.generateTokens(user);
-    const refreshToken = await this.tokensRepository.create({value: tokens.refreshToken, userId: user.id});
+    const tokens = this.tokensService.generate(user);
+    const refreshToken = await this.tokensService.save(tokens.refreshToken, user.id);
     if(!refreshToken) {
       throw new HttpException(
         `Проблема авторизации`,
@@ -50,8 +45,8 @@ export class AuthService {
       ...userDto,
       password: hashPassword,
     });
-    const tokens = this.generateTokens(user);
-    const refreshToken = await this.tokensRepository.create({value: tokens.refreshToken, userId: user.id});
+    const tokens = this.tokensService.generate(user);
+    const refreshToken = await this.tokensService.save(tokens.refreshToken, user.id);
     if(!refreshToken) {
       throw new HttpException(
         `Проблема авторизации`,
@@ -62,42 +57,6 @@ export class AuthService {
       user,
       tokens
     };
-  }
-
-  async checkAuth(token: string) {
-    const user = await this.validateAccessToken(token);
-    return {
-      user,
-      token: this.generateToken(user),
-    };
-  }
-
-  generateToken(user: UserModel) {
-    const payload = { email: user.email, id: user.id, roles: user.roles };
-    return this.jwtService.sign(payload, {
-      secret: process.env.ACCESS_TOKEN_SECRET || 'ACCESS_TOKEN_SECRET',
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRATION || '24h'
-    });
-  }
-
-  generateTokens(user: UserModel) {
-    const payload = { email: user.email, id: user.id, roles: user.roles };
-    const accessToken = this.jwtService.sign(payload, {
-      secret: process.env.ACCESS_TOKEN_SECRET || 'ACCESS_TOKEN_SECRET',
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRATION || '24h'
-    });
-    const refreshToken = this.jwtService.sign(payload, {
-      secret: process.env.REFRESH_TOKEN_SECRET || 'REFRESH_TOKEN_SECRET',
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRATION || '24h'
-    });
-    return {
-      accessToken: accessToken,
-      refreshToken: refreshToken
-    }
-  }
-
-  private async validateAccessToken(token: string) {
-    return this.jwtService.verify(token);
   }
 
   private async validateUser(userDto: CreateUserDto) {
